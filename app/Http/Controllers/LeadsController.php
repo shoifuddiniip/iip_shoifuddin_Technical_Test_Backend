@@ -89,6 +89,15 @@ class LeadsController extends Controller
             'isSurvey' => 'required|integer',
         ]);
 
+        $checklead = Leads::where('id', $id)->whereIn('status', ['new', 'follow_up', 'survey_rejected'])->count();
+        if($checklead === 0){
+            return response()->json([
+                'status_code' => 403,
+                'status' => 'fail',
+                'message' => 'cannot find lead, or lead in another stage !'
+            ], 403);
+        }
+
         $lead = Leads::findOrFail($id);
 
         if ($request->isSurvey > 0) {
