@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use App\Models\Survey;
+use App\Models\Leads;
+
 
 class SurveyController extends Controller
 {
@@ -35,10 +37,16 @@ class SurveyController extends Controller
         $survey->status = 'upload';
         $survey->save();
 
+        $lead = Leads::find($survey->lead_id);
+        $lead->status = 'survey_completed';
+        $lead->save();
+
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
             'data' => null,
         ]);
     }
+
+
 }
