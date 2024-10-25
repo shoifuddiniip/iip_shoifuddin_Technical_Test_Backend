@@ -13,6 +13,7 @@ class CreateLeadsTable extends Migration
             $table->string('name');
             $table->string('email')->nullable();
             $table->string('phone', 15)->nullable();
+            $table->string('status')->default('new');
             $table->foreignId('assigned_to')->unique()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

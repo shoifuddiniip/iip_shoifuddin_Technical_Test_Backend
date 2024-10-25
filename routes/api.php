@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TodoController;
+use App\Http\Controllers\LeadsController;
+use App\Http\Controllers\UsersController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -12,10 +13,11 @@ Route::controller(AuthController::class)->group(function () {
 
 });
 
-Route::controller(TodoController::class)->group(function () {
-    Route::get('todos', 'index');
-    Route::post('todo', 'store');
-    Route::get('todo/{id}', 'show');
-    Route::put('todo/{id}', 'update');
-    Route::delete('todo/{id}', 'destroy');
+Route::controller(UsersController::class)->group(function () {
+    Route::post('/restrict-salesperson/{id}', 'restrict')->middleware('role:Super Admin');
+});
+
+Route::controller(LeadsController::class)->group(function () {
+    Route::get('/leads', 'index')->middleware('role:Customer Service,Super Admin'); // Get All for CS
+    Route::get('/leads', 'store')->middleware('role:Customer Service,Super Admin'); // Inset for CS
 });
