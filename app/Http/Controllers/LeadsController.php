@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Leads;
 use App\Models\User;
+use App\Models\Survey;
 use App\Models\LeadDistributionTracker;
 
 class LeadsController extends Controller
@@ -80,5 +81,35 @@ class LeadsController extends Controller
         $tracker->update(['last_sales_id' => $sales[$nextIndex - 1]]);
 
         return response()->json(['message' => 'Leads distributed successfully'], 200);
+    }
+
+    public function requestSurvey(Request $request, $id)
+    {
+        $request->validate([
+            'isSurvey' => 'required|integer',
+        ]);
+
+        $lead = Leads::findOrFail($id);
+
+        if ($request->isSurvey > 0) {
+            $lead->status = 'survey_request';
+            Survey::create([
+                'lead_id' => $lead->id,
+                'status' => null,
+                'feedback' => null,
+                'image' => null,
+            ]);
+        } else {
+            $lead->status = 'follow_up';
+        }
+
+        $lead->save();
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'data' => null,
+        ]);
+
     }
 }
