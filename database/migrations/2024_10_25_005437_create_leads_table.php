@@ -13,7 +13,16 @@ class CreateLeadsTable extends Migration
             $table->string('name');
             $table->string('email')->nullable();
             $table->string('phone', 15)->nullable();
-            $table->string('status')->default('new');
+            $table->enum('status', [
+                'new',
+                'follow_up',
+                'survey_request',
+                'survey_approved',
+                'survey_rejected',
+                'survey_completed',
+                'final_proposal_follow_up',
+                'deal'
+            ])->default('new'); // Default status
             $table->foreignId('assigned_to')->unique()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
