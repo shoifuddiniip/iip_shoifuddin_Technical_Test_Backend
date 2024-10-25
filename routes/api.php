@@ -20,13 +20,16 @@ Route::controller(UsersController::class)->group(function () {
 
 Route::controller(LeadsController::class)->group(function () {
     Route::get('/leads', 'index')->middleware('role:Customer Service,Super Admin'); // Get All for CS
-    Route::get('/leads', 'store')->middleware('role:Customer Service,Super Admin'); // Insert for CS
+    Route::post('/leads', 'store')->middleware('role:Customer Service,Super Admin'); // Insert for CS
 });
 
 Route::controller(LeadsController::class)->group(function () {
-    Route::get('/leads/{id}/request-survey', 'requestSurvey')->middleware('role:Salesperson,Super Admin'); // update for sales
+    Route::put('/leads/{id}/request-survey', 'requestSurvey')->middleware('role:Salesperson,Super Admin'); // update for sales
 });
 
 Route::controller(SurveyController::class)->group(function () {
-    Route::get('/leads/{id}/update-file', 'uploadFile')->middleware('role:Salesperson,Super Admin'); // update for sales
+    Route::put('/leads/{id}/update-file', 'uploadFile')->middleware('role:Salesperson,Super Admin'); // update for sales
+    Route::put('/leads/{id}/update-file', 'surveyApproveOrReject')->middleware('role:Operational,Super Admin'); // update Opratoin
+
 });
+

@@ -48,5 +48,30 @@ class SurveyController extends Controller
         ]);
     }
 
+    public function surveyApproveOrReject(Request $request, $id){
+        $request->validate([
+            'accepted' => 'required|integer',
+        ]);
+
+        $survey = Survey::findOrFail($id);
+        $lead = Leads::find($survey->lead_id);
+        if($request->accepted > 0){
+            $survey->status ='done';
+            $lead->status = 'survey_approved';
+        } else {
+            $survey->status ='pending';
+            $lead->status = 'survey_rejected';
+        }
+
+        $survey->save();
+        $lead->save();
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'data' => null,
+        ]);
+    }
+
 
 }
