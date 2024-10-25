@@ -15,7 +15,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(UsersController::class)->group(function () {
-    Route::post('/restrict-salesperson/{id}', 'restrict')->middleware('role:Super Admin');
+    Route::put('/restrict-salesperson/{id}', 'restrict')->middleware('role:Super Admin');
 });
 
 Route::controller(LeadsController::class)->group(function () {
@@ -25,11 +25,12 @@ Route::controller(LeadsController::class)->group(function () {
 
 Route::controller(LeadsController::class)->group(function () {
     Route::put('/leads/{id}/request-survey', 'requestSurvey')->middleware('role:Salesperson,Super Admin'); // update for sales
+    Route::put('/leads/{id}/request-final', 'requestFinal')->middleware('role:Salesperson,Super Admin'); // update for sales
+    Route::put('/leads/{id}/deal', 'requestDeal')->middleware('role:Salesperson,Super Admin'); // update for sales
 });
 
 Route::controller(SurveyController::class)->group(function () {
     Route::put('/leads/{id}/update-file', 'uploadFile')->middleware('role:Salesperson,Super Admin'); // update for sales
-    Route::put('/leads/{id}/update-file', 'surveyApproveOrReject')->middleware('role:Operational,Super Admin'); // update Opratoin
-
+    Route::put('/leads/{id}/reject-approve', 'surveyApproveOrReject')->middleware('role:Operational,Super Admin'); // update Opratoin
 });
 

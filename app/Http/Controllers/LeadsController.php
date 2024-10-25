@@ -7,6 +7,7 @@ use App\Models\Leads;
 use App\Models\User;
 use App\Models\Survey;
 use App\Models\LeadDistributionTracker;
+use Illuminate\Support\Facades\Hash;
 
 class LeadsController extends Controller
 {
@@ -90,7 +91,7 @@ class LeadsController extends Controller
         ]);
 
         $checklead = Leads::where('id', $id)->whereIn('status', ['new', 'follow_up', 'survey_rejected'])->count();
-        if($checklead === 0){
+        if ($checklead === 0) {
             return response()->json([
                 'status_code' => 403,
                 'status' => 'fail',
@@ -119,6 +120,65 @@ class LeadsController extends Controller
             'status' => 'success',
             'data' => null,
         ]);
+    }
 
+    public function requestFinal($id)
+    {
+        $checklead = Leads::where('id', $id)->whereIn('status', ['survey_approved',])->count();
+        if ($checklead === 0) {
+            return response()->json([
+                'status_code' => 403,
+                'status' => 'fail',
+                'message' => 'cannot find lead, or lead in another stage !'
+            ], 403);
+        }
+
+        $lead = Leads::findOrFail($id);
+        $lead->status = 'final_proposal_follow_up';
+        $lead->save();
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'data' => null,
+        ]);
+    }
+
+    public function requestDeal(Request $request, $id)
+    {
+        $request->validate([
+            'deal' => 'required|integer',
+        ]);
+
+        $checklead = Leads::where('id', $id)->whereIn('status', ['final_proposal_follow_up'])->count();
+        if ($checklead === 0) {
+            return response()->json([
+                'status_code' => 403,
+                'status' => 'fail',
+                'message' => 'cannot find lead, or lead in another stage !'
+            ], 403);
+        }
+
+        $lead = Leads::findOrFail($id);
+
+        if ($request->deal > 0) {
+            $lead->status = 'deal';
+            User::create([
+                'name' => $lead->name, // You can set a name for the user
+                'email' => $lead->email,
+                'password' => Hash::make('User12345'), // Hashing the password
+                'role_id' => 5,
+            ]);
+        } else {
+            $lead->status = 'not_deal';
+        }
+
+        $lead->save();
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'data' => null,
+        ]);
     }
 }

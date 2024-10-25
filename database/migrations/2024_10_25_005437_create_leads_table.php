@@ -21,7 +21,8 @@ class CreateLeadsTable extends Migration
                 'survey_rejected',
                 'survey_completed',
                 'final_proposal_follow_up',
-                'deal'
+                'deal',
+                'not_deal',
             ])->default('new'); // Default status
             $table->foreignId('assigned_to')->unique()->constrained('users')->onDelete('cascade');
             $table->timestamps();
