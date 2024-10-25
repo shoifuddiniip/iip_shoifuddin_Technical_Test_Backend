@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeadDistributionTracker extends Model
 {
-    protected $fillable = ['last_assigned_salesperson_id'];
+    protected $fillable = ['last_sales_id'];
 }
