@@ -16,7 +16,7 @@ class CreateLeadDistributionTrackersTable extends Migration
         });
 
         // Insert an initial record to use for tracking
-        DB::table('last_sales_id')->insert(['last_sales_id' => null]);
+        // DB::table('last_sales_id')->insert(['last_sales_id' => null]);
     }
 
     public function down()
